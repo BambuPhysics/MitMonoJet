@@ -11,8 +11,8 @@
 #include "MitAna/DataTree/interface/MCParticleCol.h"
 #include "MitAna/DataTree/interface/VertexFwd.h"
 #include "MitAna/DataTree/interface/PileupEnergyDensityCol.h"
-#include "MitMonoJet/DataTree/interface/XlJetFwd.h"
-#include "MitMonoJet/DataTree/interface/XlJet.h"
+#include "MitAna/DataTree/interface/XlJetFwd.h"
+#include "MitAna/DataTree/interface/XlJet.h"
 #include "MitCommon/MathTools/interface/MathUtils.h"
 
 // for QG corrections

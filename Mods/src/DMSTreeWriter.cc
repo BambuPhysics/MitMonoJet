@@ -12,11 +12,11 @@
 #include "MitAna/DataTree/interface/PFTauCol.h"
 #include "MitPhysics/Init/interface/ModNames.h"
 #include "MitPhysics/Utils/interface/MuonTools.h"
-#include "MitMonoJet/DataTree/interface/XlJet.h"
-#include "MitMonoJet/DataTree/interface/XlFatJet.h"
-#include "MitMonoJet/DataTree/interface/XsIsoParticle.h"
+#include "MitAna/DataTree/interface/XlJet.h"
+#include "MitAna/DataTree/interface/XlFatJet.h"
+#include "MitAna/DataTree/interface/XsIsoParticle.h"
 #include "MitMonoJet/Utils/interface/DiJetMVA.h"
-#include "MitMonoJet/DataTree/interface/XlSubJet.h"
+#include "MitAna/DataTree/interface/XlSubJet.h"
 
 #include "MitMonoJet/Mods/interface/DMSTreeWriter.h"
 

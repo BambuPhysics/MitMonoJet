@@ -1,7 +1,6 @@
 #include <TSystem.h>
 #include <TFile.h>
-#include "CondFormats/JetMETObjects/interface/FactorizedJetCorrector.h"
-#include "CondFormats/JetMETObjects/interface/JetCorrectorParameters.h"
+
 #include "MitCommon/MathTools/interface/MathUtils.h"
 #include "MitAna/DataTree/interface/MuonFwd.h"
 #include "MitAna/DataTree/interface/ElectronFwd.h"
@@ -65,8 +64,6 @@ MonoJetTreeWriter::MonoJetTreeWriter(const char *name, const char *title) :
   fPFCandidatesFromBranch (kTRUE),
   fPVFromBranch           (kTRUE),
   fQGTaggerCHS            (kTRUE),
-  fJetCorrector           (0),
-  fJetUncertainties       (0),
   // -------------------------
   fRawMet                 (0),
   fMet                    (0),
@@ -111,8 +108,6 @@ void MonoJetTreeWriter::SlaveTerminate()
 {
   fOutputFile->WriteTObject(fMitGPTree.tree_,fMitGPTree.tree_->GetName());
   std::cout << "Processed events on MonoJetTreeWriter: " << fNEventsSelected << std::endl;
-  delete fJetCorrector;
-  delete fJetUncertainties;
   //  delete fMVAMet;
 }
 
@@ -130,8 +125,8 @@ void MonoJetTreeWriter::Process()
     LoadBranch(fMCEvInfoName);
     LoadBranch(fPileUpName);
     LoadEventObject(fMCPartName,      fParticles);
-    GenMet = GetObjThisEvt<MetOArr>(ModNames::gkMCMETName);
-    GenLeptons = GetObjThisEvt<MCParticleOArr>(ModNames::gkMCLeptonsName);
+    GenMet = GetObject<MetOArr>(ModNames::gkMCMETName);
+    GenLeptons = GetObject<MCParticleOArr>(ModNames::gkMCLeptonsName);
   }
 
   LoadEventObject(fRawMetName,        fRawMet,        true);
@@ -148,11 +143,11 @@ void MonoJetTreeWriter::Process()
   LoadEventObject(fSuperClustersName, fSuperClusters);
   LoadEventObject(fTracksName,        fTracks,        true);
 
-  ParticleOArr    *leptons  = GetObjThisEvt<ParticleOArr>(ModNames::gkMergedLeptonsName);
-  const VertexCol *vertices = GetObjThisEvt<VertexOArr>(fVertexName);
+  ParticleOArr    *leptons  = GetObject<ParticleOArr>(ModNames::gkMergedLeptonsName);
+  const VertexCol *vertices = GetObject<VertexOArr>(fVertexName);
 
-  const PFCandidateCol *fPFNoPileUpCands = GetObjThisEvt<PFCandidateCol>(fPFNoPileUpName);    
-  const PFCandidateCol *fPFPileUpCands = GetObjThisEvt<PFCandidateCol>(fPFPileUpName);
+  const PFCandidateCol *fPFNoPileUpCands = GetObject<PFCandidateCol>(fPFNoPileUpName);    
+  const PFCandidateCol *fPFPileUpCands = GetObject<PFCandidateCol>(fPFPileUpName);
 
   fNEventsSelected++;
 
@@ -411,17 +406,6 @@ void MonoJetTreeWriter::Process()
     Jet *jet = inJet->MakeCopy();
     pfJets->AddOwned(dynamic_cast<PFJet*>(jet));
 
-    // cache uncorrected momentum
-    const FourVectorM rawMom = jet->RawMom();
-
-    // compute correction factors
-    fJetCorrector->setJetEta(rawMom.Eta());
-    fJetCorrector->setJetPt(rawMom.Pt());
-    fJetCorrector->setJetPhi(rawMom.Phi());
-    fJetCorrector->setJetE(rawMom.E());
-    fJetCorrector->setRho(fPileUpDen->At(0)->RhoRandom()); // pileup - density
-    fJetCorrector->setJetA(jet->JetArea());                // pileup - jet area
-    fJetCorrector->setJetEMF(-99.0);
   }
 
   fMitGPTree.njets_ = fJets->GetEntries();
@@ -433,9 +417,6 @@ void MonoJetTreeWriter::Process()
 
     fMitGPTree.jet1_ = jet->Mom();
 
-    fJetUncertainties->setJetPt(jet->Pt());
-    fJetUncertainties->setJetEta(jet->Eta());
-    fMitGPTree.jet1Unc_ = fJetUncertainties ->getUncertainty(true);
     fMitGPTree.jet1CHF_ = jet->ChargedHadronEnergy()/jet->RawMom().E();
     fMitGPTree.jet1NHF_ = jet->NeutralHadronEnergy()/jet->RawMom().E();
     fMitGPTree.jet1NEMF_ = jet->NeutralEmEnergy()/jet->RawMom().E();
@@ -506,9 +487,6 @@ void MonoJetTreeWriter::Process()
   if (fJets->GetEntries() >= 2) {
     const PFJet *jet = dynamic_cast<const PFJet*>(fJets->At(1));
     fMitGPTree.jet2_ = jet->Mom();
-    fJetUncertainties->setJetPt(jet->Pt());
-    fJetUncertainties->setJetEta(jet->Eta());
-    fMitGPTree.jet2Unc_ = fJetUncertainties ->getUncertainty(true);
     fMitGPTree.jet2CHF_  = jet->ChargedHadronEnergy()/jet->RawMom().E();
     fMitGPTree.jet2NHF_  = jet->NeutralHadronEnergy()/jet->RawMom().E();
     fMitGPTree.jet2NEMF_  = jet->NeutralEmEnergy()/jet->RawMom().E();
@@ -590,34 +568,6 @@ void MonoJetTreeWriter::Process()
     fMitGPTree.ntracks_++;
   }
 
-  // MVA MET
-
-  //  Met       mvaMet = fMVAMet->GetMet(fMuons,fElectrons,fPFTaus,fPFCandidates,
-  //				     pfJets,0,fPV,fRawMet,fJetCorrector,fPileUpDen);
-//  TMatrixD* MVACov = fMVAMet->GetMetCovariance();
-
-//  fMitGPTree.mvamet_ = mvaMet.Pt();
-//  fMitGPTree.mvametPhi_ = mvaMet.Phi();
-//  fMitGPTree.mvametCorZ_ = mvaMet.Pt();
-//  fMitGPTree.mvametCorZPhi_ = mvaMet.Phi();
-//  fMitGPTree.mvametCorW_ = mvaMet.Pt();
-//  fMitGPTree.mvametCorWPhi_ = mvaMet.Phi();
-//  fMitGPTree.mvaCov00_ = (*MVACov)(0,0);
-//  fMitGPTree.mvaCov10_ = (*MVACov)(1,0);
-//  fMitGPTree.mvaCov01_ = (*MVACov)(0,1);
-//  fMitGPTree.mvaCov11_ = (*MVACov)(1,1);
-
-//  if (leptons->GetEntries() >= 1) {
-//    // If the event contains at least 1 leptons correct the MET using the highest pt ones
-//    CorrectMet(fMitGPTree.mvamet_,    fMitGPTree.mvametPhi_,leptons->At(0),0,
-//	       fMitGPTree.mvametCorW_,fMitGPTree.mvametCorWPhi_);
-//  }
-//  if (leptons->GetEntries() >= 2) {
-//    // If the event contains at least 2 leptons correct the MET using the 2 highest pt ones
-//    CorrectMet(fMitGPTree.mvamet_,    fMitGPTree.mvametPhi_,leptons->At(0),leptons->At(1),
-//	       fMitGPTree.mvametCorZ_,fMitGPTree.mvametCorZPhi_);
-//  }
-
   // Finally fill the tree
   fMitGPTree.tree_->Fill();
 
@@ -669,48 +619,6 @@ void MonoJetTreeWriter::SlaveBegin()
     fCorrectionFiles.push_back(std::string((gSystem->Getenv("CMSSW_BASE") + TString("/src/MitPhysics/data/Summer13_V1_MC_L2Relative_AK5PF.txt")).Data()));
     fCorrectionFiles.push_back(std::string((gSystem->Getenv("CMSSW_BASE") + TString("/src/MitPhysics/data/Summer13_V1_MC_L3Absolute_AK5PF.txt")).Data()));
   }
-
-  // Initialize JetCorrectorParameters from files
-  std::vector<JetCorrectorParameters> correctionParameters;
-  for (std::vector<std::string>::const_iterator it = fCorrectionFiles.begin(); it!=fCorrectionFiles.end(); ++it)
-    correctionParameters.push_back(JetCorrectorParameters(*it));
-
-  // Initialize jet corrector class
-  fJetCorrector = new FactorizedJetCorrector(correctionParameters);
-
-  // This should also go into the run file
-  std::string jetCorrectorParams;
-  if (fIsData)
-    jetCorrectorParams = std::string(TString::Format("%s/src/MitPhysics/data/Summer13_V1_DATA_Uncertainty_AK5PF.txt", getenv("CMSSW_BASE")));
-  else
-    jetCorrectorParams = std::string(TString::Format("%s/src/MitPhysics/data/Summer13_V1_MC_Uncertainty_AK5PF.txt", getenv("CMSSW_BASE")));
-
-  JetCorrectorParameters param(jetCorrectorParams);
-  fJetUncertainties = new JetCorrectionUncertainty(param);
-
-  // Create a new MVA MET object
-  //  fMVAMet = new MVAMet();
-//   fMVAMet->Initialize(TString(getenv("CMSSW_BASE")+string("/src/MitPhysics/data/TMVAClassificationCategory_JetID_MET_53X_Dec2012.weights.xml")),
-//                       TString(getenv("CMSSW_BASE")+string("/src/MitPhysics/data/TMVAClassificationCategory_JetID_MET_53X_Dec2012.weights.xml")),
-//                       TString(getenv("CMSSW_BASE")+string("/src/MitPhysics/Utils/python/JetIdParams_cfi.py")),
-//                       //TString(getenv("CMSSW_BASE")+string("/src/MitPhysics/data/gbrmet_53_Dec2012.root")),
-//                       //TString(getenv("CMSSW_BASE")+string("/src/MitPhysics/data/gbrmetphi_53_Dec2012.root")),
-// 		      TString(getenv("CMSSW_BASE")+string("/src/MitPhysics/data/gbrmet_53_June2013_type1.root")),
-// 		      TString(getenv("CMSSW_BASE")+string("/src/MitPhysics/data/gbrmetphi_53_June2013_type1.root")),
-//                       TString(getenv("CMSSW_BASE")+string("/src/MitPhysics/data/gbru1cov_53_Dec2012.root")),
-//                       TString(getenv("CMSSW_BASE")+string("/src/MitPhysics/data/gbru2cov_53_Dec2012.root")),JetIDMVA::k53MET
-// 		      );
-
-  
-//  fMVAMet->Initialize(
-//		      TString(getenv("CMSSW_BASE")+string("/src/MitPhysics/data/TMVAClassificationCategory_JetID_MET_53X_Dec2012.weights.xml")),
-//		      TString(getenv("CMSSW_BASE")+string("/src/MitPhysics/data/TMVAClassificationCategory_JetID_MET_53X_Dec2012.weights.xml")),
-//		      TString(getenv("CMSSW_BASE")+string("/src/MitPhysics/Utils/python/JetIdParams_cfi.py")),
-//		      TString(getenv("CMSSW_BASE")+string("/src/MitPhysics/data/gbrmet_53_June2013_type1.root")),
-//		      TString(getenv("CMSSW_BASE")+string("/src/MitPhysics/data/gbrmetphi_53_June2013_type1.root")),
-//		      TString(getenv("CMSSW_BASE")+string("/src/MitPhysics/data/gbru1cov_53_Dec2012.root")),
-//		      TString(getenv("CMSSW_BASE")+string("/src/MitPhysics/data/gbru2cov_53_Dec2012.root")),JetIDMVA::k53MET,MVAMet::kUseType1Rho
-//		      );
 
 
   // Create Ntuple Tree

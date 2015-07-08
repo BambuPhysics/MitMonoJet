@@ -2,7 +2,7 @@
 #include "MitMonoJet/TreeFiller/interface/FillerXlJets.h"
 #include "MitAna/DataTree/interface/PFJetCol.h"
 
-#include "MitMonoJet/DataTree/interface/XlJet.h"
+#include "MitAna/DataTree/interface/XlJet.h"
 #include "MitCommon/DataFormats/interface/Types.h"
 #include "MitCommon/MathTools/interface/MathUtils.h"
 
@@ -46,13 +46,19 @@ void FillerXlJets::Process()
   // make sure the out collections are empty before starting
   fXlJets->Delete();  
   
-  // Load the branches we want to work with
-  LoadEventObject(fJetsName,fJets,fJetsFromBranch);
-  if (fQGTaggingActive) {
-    LoadEventObject(fPileUpDenName,fPileUpDen,fPileUpDenFromBranch);
-    LoadEventObject(fVertexesName,fVertexes,fVertexesFromBranch);
-  }
+  // // Load the branches we want to work with
+  // LoadEventObject(fJetsName,fJets,fJetsFromBranch);
+  // if (fQGTaggingActive) {
+  //   LoadEventObject(fPileUpDenName,fPileUpDen,fPileUpDenFromBranch);
+  //   LoadEventObject(fVertexesName,fVertexes,fVertexesFromBranch);
+  // }
  
+  fJets = GetObject<JetOArr>(fJetsName);
+  if (fQGTaggingActive){
+    fPileUpDen = GetObject<PileupEnergyDensityCol>(fPileUpDenName);
+    fVertexes = GetObject<VertexCol>(fVertexesName);
+  }
+
   // Setup pileup density for QG computation
   if (fQGTaggingActive)
     fQGTagger->SetRhoIso(fPileUpDen->At(0)->RhoRandomLowEta());

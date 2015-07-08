@@ -80,14 +80,6 @@ void MonoJetAnalysisMod::Begin()
 //--------------------------------------------------------------------------------------------------
 void MonoJetAnalysisMod::SlaveBegin()
 {
-  // Load Branches
-  ReqEventObject(fMetBranchName,   fMet,         fMetFromBranch);
-  ReqEventObject(fJetsName,        fJets,        fJetsFromBranch);
-  ReqEventObject(fPFCandidatesName,fPFCandidates,fPFCandidatesFromBranch);
-  ReqEventObject(fElectronsName,   fElectrons,   fElectronsFromBranch);
-  ReqEventObject(fMuonsName,       fMuons,       fMuonsFromBranch);
-  ReqEventObject(fTausName,        fPFTaus,      fTausFromBranch);
-
   // Selection Histograms
   for(unsigned iCat = 0; iCat != nCat; ++iCat){
     // Histograms after preselection
@@ -105,16 +97,16 @@ void MonoJetAnalysisMod::SlaveBegin()
 //--------------------------------------------------------------------------------------------------
 void MonoJetAnalysisMod::Process()
 {
-  LoadEventObject(fMetBranchName,fMet,fMetFromBranch);
-  LoadEventObject(fElectronsName,fElectrons,fElectronsFromBranch);
-  LoadEventObject(fMuonsName,fMuons,fMuonsFromBranch);
-  LoadEventObject(fTausName,fPFTaus,fTausFromBranch);
-  LoadEventObject(fPFCandidatesName,fPFCandidates,fPFCandidatesFromBranch);
+  fMet = GetObject<MetCol>(fMetBranchName);
+  fElectrons = GetObject<ElectronCol>(fElectronsName);
+  fMuons = GetObject<MuonCol>(fMuonsName);
+  fPFTaus = GetObject<PFTauCol>(fTausName);
+  fPFCandidates = GetObject<PFCandidateCol>(fPFCandidatesName);
 
-  fJets = GetObjThisEvt<JetOArr>(fJetsName);
+  fJets = GetObject<JetOArr>(fJetsName);
 
-  ParticleOArr   *leptons      = GetObjThisEvt<ParticleOArr>(fLeptonsName);
-  MCParticleOArr *genNeutrinos = GetObjThisEvt<MCParticleOArr>(ModNames::gkMCNeutrinosName);
+  ParticleOArr   *leptons      = GetObject<ParticleOArr>(fLeptonsName);
+  MCParticleOArr *genNeutrinos = GetObject<MCParticleOArr>(ModNames::gkMCNeutrinosName);
 
   // Define Cuts
   const int nCuts = 7;

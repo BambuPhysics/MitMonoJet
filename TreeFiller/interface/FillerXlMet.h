@@ -27,9 +27,9 @@
 #include "MitAna/DataTree/interface/PFJetCol.h"
 #include "MitPhysics/Utils/interface/MVAMet.h"
 
-#include "MitMonoJet/DataTree/interface/XlMet.h"
-#include "MitMonoJet/DataTree/interface/XlMetFwd.h"
-#include "MitMonoJet/DataTree/interface/XlEvtSelData.h"
+#include "MitAna/DataTree/interface/XlMet.h"
+#include "MitAna/DataTree/interface/XlMetFwd.h"
+#include "MitAna/DataTree/interface/XlEvtSelData.h"
 
 namespace mithep
 {
@@ -105,9 +105,6 @@ namespace mithep
       const XlEvtSelData           *fEvtSelData; //array of XlMet
 
       MVAMet *fMVAMet;                           
-      std::vector<std::string> fCorrectionFiles; // list of jet correction files
-      FactorizedJetCorrector *fJetCorrector; 
-
       ClassDef(FillerXlMet, 0)                   //XlMet filler      
   };
 }

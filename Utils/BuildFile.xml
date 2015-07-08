@@ -1,7 +1,6 @@
 <use   name="MitAna/DataTree"/>
 <use   name="MitAna/DataUtil"/>
 <use   name="MitCommon/MathTools"/>
-<use   name="MitMonoJet/DataTree"/>
 <use   name="root"/>
 <use   name="roofit"/>
 <use   name="roottmva"/>

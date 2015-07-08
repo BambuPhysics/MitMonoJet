@@ -3,7 +3,7 @@
 <use   name="MitPhysics/Init"/>
 <use   name="MitPhysics/Utils"/>
 <use   name="MitPhysics/Mods"/>
-<use   name="MitMonoJet/DataTree"/>
+<use   name="MitAna/DataTree"/>
 <use   root=""/>
 <export>
   <lib   name="1"/>

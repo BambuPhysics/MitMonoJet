@@ -43,7 +43,8 @@ void SkimJetsMod::Process()
   if (fColFromBranch)
     LoadBranch(GetBranchName());
   else 
-    LoadEventObject(GetBranchName(), fCol);
+    fCol = GetObject<JetCol>(GetBranchName());
+    // LoadEventObject(GetBranchName(), fCol);
 
   // loop on the input collection and apply the filter on mark if required
   const UInt_t entries = fCol->GetEntries();
