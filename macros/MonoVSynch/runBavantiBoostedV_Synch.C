@@ -325,8 +325,8 @@ void runBavantiBoostedV_Synch
   pftauCleaningMod->SetCleanElectronsName(electronCleaning->GetOutputName());
 
   PublisherMod<PFJet,Jet> *pubJet = new PublisherMod<PFJet,Jet>("JetPub");
-  pubJet->SetInputName("AKt5PFJets");
-  pubJet->SetOutputName("PubAKt5PFJets");
+  pubJet->SetInputName("AKt4PFJets");
+  pubJet->SetOutputName("PubAKt4PFJets");
   
   FastJetMod *pubFastJet = new FastJetMod;
   pubFastJet->SetPfCandidatesName("pfnopileupcands");
@@ -420,7 +420,8 @@ void runBavantiBoostedV_Synch
   jetplusmet->ApplyResolvedPresel(kTRUE); 
   jetplusmet->ApplyTopPresel(kFALSE); 
   jetplusmet->ApplyWlepPresel(kTRUE);
-  jetplusmet->ApplyZlepPresel(kTRUE);
+  jetplusmet->ApplyZeePresel(kTRUE);
+  jetplusmet->ApplyZmmPresel(kTRUE);
   jetplusmet->ApplyMetPresel(kTRUE);
   jetplusmet->ApplyVbfPresel(kFALSE);
   jetplusmet->ApplyGjetPresel(kTRUE);

@@ -5,7 +5,6 @@
 #include "MitMonoJet/Mods/interface/BoostedVTreeWriter.h"
 #include "MitMonoJet/Mods/interface/DMSTreeWriter.h"
 #include "MitMonoJet/Mods/interface/SkimJetsMod.h"
-#include "MitMonoJet/Mods/interface/FastJetMod.h"
 #include "MitMonoJet/Mods/interface/MetAnalysisMod.h"
 #include "MitMonoJet/Mods/interface/PreRun2SynchExercise.h"
 #endif
@@ -24,7 +23,6 @@
 #pragma link C++ class mithep::BoostedVTreeWriter+;
 #pragma link C++ class mithep::DMSTreeWriter+;
 #pragma link C++ class mithep::SkimJetsMod+;
-#pragma link C++ class mithep::FastJetMod+;
 #pragma link C++ class mithep::MetAnalysisMod+;
 #pragma link C++ class mithep::PreRun2SynchExercise+;
 #endif

@@ -71,14 +71,14 @@ void BoostedVTreeWriter::Process()
   LoadEventObject(fPfTausName,fPfTaus,fPfTausFromBranch);
   LoadEventObject(fPfTausName,fPfTaus,fPfTausFromBranch);
   LoadEventObject(fPileUpDenName,fPileUpDen,kTRUE);
-  ParticleOArr *leptons = GetObjThisEvt<ParticleOArr>(ModNames::gkMergedLeptonsName);
+  const ParticleOArr *leptons = static_cast<const ParticleOArr*>(GetObject<ParticleOArr>(ModNames::gkMergedLeptonsName));
 
   // Careful the are not booked and just local (needed only for isolation)
-  const PFCandidateCol *lPFNoPileUpCands = GetObjThisEvt<PFCandidateCol>(fPfNoPileUpName);    
-  const PFCandidateCol *lPFPileUpCands = GetObjThisEvt<PFCandidateCol>(fPfPileUpName);
+  const PFCandidateCol *lPFNoPileUpCands = GetObject<PFCandidateCol>(fPfNoPileUpName);    
+  const PFCandidateCol *lPFPileUpCands = GetObject<PFCandidateCol>(fPfPileUpName);
 
   // Also these are not booked and just local (needed only for QG discriminant)
-  const VertexCol *lVertexes = GetObjThisEvt<VertexOArr>(fVertexesName);
+  const VertexCol *lVertexes = GetObject<VertexOArr>(fVertexesName);
 
   // Extract the jet trigger objects from all trigger objects
   GetJetTriggerObjs();

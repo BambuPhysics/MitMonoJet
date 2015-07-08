@@ -25,7 +25,7 @@
   str += TString(" -lMitAnaPhysicsMod -lMitAnaTAM -lMitAnaTreeMod -lMitAnaUtils");
   str += TString(" -lMitAnaValidation");
   str += TString(" -lMitPhysicsMods -lMitPhysicsSelMods -lMitPhysicsUtils");
-  str += TString(" -lMitMonoJetMods -lMitMonoJetSelMods -lMitMonoJetDataTree -lMitMonoJetTreeFiller");
+  str += TString(" -lMitMonoJetMods -lMitMonoJetSelMods -lMitMonoJetTreeFiller");
   str += TString(" -lfastjet -lfastjettools -lfastjetcontribfragile -lqjets");
   str += TString(" -lMitPlotsStyle -lMitPlotsInput -lMitPlotsPlot");
   gSystem->SetMakeSharedLib(str);

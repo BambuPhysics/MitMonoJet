@@ -39,7 +39,7 @@
 #include "MitPhysics/Utils/interface/PhotonTools.h"
 #include "MitPhysics/Utils/interface/MVAMet.h"
 #include "MitPhysics/Utils/interface/MVAVBF.h"
-#include "MitPhysics/Utils/interface/QGTagger.h"
+#include "MitAna/PhysicsUtils/interface/QGTagger.h"
 #include "MitPhysics/Utils/interface/RhoUtilities.h"
 #include "MitPhysics/Utils/interface/VertexTools.h"
 #include "MitPhysics/Utils/interface/ElectronIDMVA.h"

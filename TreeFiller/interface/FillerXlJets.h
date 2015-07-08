@@ -14,15 +14,15 @@
 
 #include <TVector2.h>
 
-#include "MitMonoJet/DataTree/interface/XlJetFwd.h"
-#include "MitMonoJet/DataTree/interface/XlJet.h"
+#include "MitAna/DataTree/interface/XlJetFwd.h"
+#include "MitAna/DataTree/interface/XlJet.h"
 
 #include "MitAna/TreeMod/interface/BaseMod.h"
 #include "MitAna/DataTree/interface/JetCol.h"
 #include "MitAna/DataTree/interface/PFJet.h"
 #include "MitAna/DataTree/interface/PileupEnergyDensityCol.h"
 #include "MitAna/DataTree/interface/VertexCol.h"
-#include "MitPhysics/Utils/interface/QGTagger.h"
+#include "MitAna/PhysicsUtils/interface/QGTagger.h"
 
 namespace mithep
 {

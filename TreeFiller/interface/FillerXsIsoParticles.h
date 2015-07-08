@@ -12,8 +12,8 @@
 #ifndef MITMONOJET_TREEFILLER_FILLERXSISOPARTICLES_H
 #define MITMONOJET_TREEFILLER_FILLERXSISOPARTICLES_H
 
-#include "MitMonoJet/DataTree/interface/XsIsoParticleFwd.h"
-#include "MitMonoJet/DataTree/interface/XsIsoParticle.h"
+#include "MitAna/DataTree/interface/XsIsoParticleFwd.h"
+#include "MitAna/DataTree/interface/XsIsoParticle.h"
 
 #include "MitAna/TreeMod/interface/BaseMod.h"
 #include "MitAna/DataTree/interface/MuonCol.h"

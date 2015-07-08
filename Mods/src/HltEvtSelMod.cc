@@ -55,7 +55,7 @@ void HltEvtSelMod::Process()
   LoadBranch(fEvtHdrName);
 
   // Load the vertices (hopefully created before)
-  fVertices = GetObjThisEvt<VertexOArr>(fVertexName);
+  fVertices = GetObject<VertexOArr>(fVertexName);
   
   // Load the HLT objects (hopefully created before)
   const TriggerObjectCol *hltObjs = GetHLTObjects(fHltObjsName);
@@ -69,7 +69,7 @@ void HltEvtSelMod::Process()
   LoadEventObject(fMetName,fMet,true);
 
   // Obtain all the good jets from the event cleaning module
-  JetOArr *cleanJets = GetObjThisEvt<JetOArr>(fCleanJetsName);
+  JetOArr *cleanJets = GetObject<JetOArr>(fCleanJetsName);
 
   // ---- Filling ntuple variables
 

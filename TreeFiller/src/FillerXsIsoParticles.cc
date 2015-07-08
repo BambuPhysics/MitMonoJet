@@ -1,7 +1,7 @@
 #include "MitPhysics/Init/interface/ModNames.h"
 #include "MitMonoJet/TreeFiller/interface/FillerXsIsoParticles.h"
 
-#include "MitMonoJet/DataTree/interface/XsIsoParticle.h"
+#include "MitAna/DataTree/interface/XsIsoParticle.h"
 #include "MitCommon/DataFormats/interface/Vect4M.h"
 #include "MitCommon/DataFormats/interface/Vect3.h"
 #include "MitCommon/DataFormats/interface/Types.h"
@@ -66,16 +66,22 @@ void FillerXsIsoParticles::Process()
   fXsPhotons->Delete();  
   
   // Load the branches we want to work with
+
   if (fFillXsMuons) {
-    LoadEventObject(fMuonsName,fMuons,fMuonsFromBranch);
-    LoadEventObject(fIsoMuonsName,fIsoMuons,fIsoMuonsFromBranch);
+    fMuons = GetObject<MuonOArr>(fMuonsName);
+    fIsoMuons = GetObject<MuonOArr>(fIsoMuonsName);
+    // LoadEventObject(fMuonsName,fMuons,fMuonsFromBranch);
+    // LoadEventObject(fIsoMuonsName,fIsoMuons,fIsoMuonsFromBranch);
   }
   if (fFillXsElectrons) 
-    LoadEventObject(fElectronsName,fElectrons,fElectronsFromBranch);
+    fElectrons = GetObject<ElectronOArr>(fElectronsName);
+    // LoadEventObject(fElectronsName,fElectrons,fElectronsFromBranch);
   if (fFillXsTaus) 
-    LoadEventObject(fTausName,fTaus,fTausFromBranch);
+    fTaus = GetObject<PFTauOArr>(fTausName);
+    // LoadEventObject(fTausName,fTaus,fTausFromBranch);
   if (fFillXsPhotons) 
-    LoadEventObject(fPhotonsName,fPhotons,fPhotonsFromBranch);
+    fPhotons = GetObject<PhotonOArr>(fPhotonsName);
+    // LoadEventObject(fPhotonsName,fPhotons,fPhotonsFromBranch);
 
   // Muon block
   if (fFillXsMuons)

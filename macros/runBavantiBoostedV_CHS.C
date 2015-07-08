@@ -332,8 +332,8 @@ void runBavantiBoostedV_CHS
   pftauCleaningMod->SetMinDeltaRToMuon(0.5);
 
   PublisherMod<PFJet,Jet> *pubJet = new PublisherMod<PFJet,Jet>("JetPub");
-  pubJet->SetInputName("AKt5PFJets");
-  pubJet->SetOutputName("PubAKt5PFJets");
+  pubJet->SetInputName("AKt4PFJets");
+  pubJet->SetOutputName("PubAKt4PFJets");
   
   FastJetMod *pubFastJet = new FastJetMod;
   pubFastJet->SetPfCandidatesName("pfnopileupcands");

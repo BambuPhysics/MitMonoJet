@@ -13,11 +13,11 @@
 #include "MitPhysics/Mods/interface/GeneratorMod.h"
 #include "MitPhysics/Mods/interface/GoodPVFilterMod.h"
 #include "MitPhysics/Mods/interface/SeparatePileUpMod.h"
-#include "MitPhysics/Mods/interface/MuonIDMod.h"
-#include "MitPhysics/Mods/interface/ElectronIDMod.h"
-#include "MitPhysics/Mods/interface/PhotonIDMod.h"
-#include "MitPhysics/Mods/interface/PFTauIDMod.h"
-#include "MitPhysics/Mods/interface/JetIDMod.h"
+#include "MitPhysics/Mods/interface/MuonIDModRun1.h"
+#include "MitPhysics/Mods/interface/ElectronIDModRun1.h"
+#include "MitPhysics/Mods/interface/PhotonIDModRun1.h"
+#include "MitPhysics/Mods/interface/PFTauIDModRun1.h"
+#include "MitPhysics/Mods/interface/JetIdMod.h"
 #include "MitPhysics/Mods/interface/ElectronCleaningMod.h"
 #include "MitPhysics/Mods/interface/PhotonCleaningMod.h"
 #include "MitPhysics/Mods/interface/PFTauCleaningMod.h"
@@ -30,6 +30,7 @@
 #include "MitPhysics/Mods/interface/PhotonPairSelector.h"
 #include "MitPhysics/Mods/interface/PhotonTreeWriter.h"
 #include "MitMonoJet/SelMods/interface/MonoJetAnalysisMod.h"
+//#include "MitTest/Mods/interface/EventCounterMod.h"
 #endif
 
 using namespace mithep;
@@ -72,6 +73,8 @@ void runMonoJetSkim(const char *fileset    = "0000",
   using namespace mithep;
   gDebugMask  = Debug::kGeneral;
   gDebugLevel = 3;
+
+  //  mithep::EventCounterMod *counter = new mithep::EventCounterMod;
 
   //------------------------------------------------------------------------------------------------
   // set up information
@@ -174,22 +177,25 @@ void runMonoJetSkim(const char *fileset    = "0000",
   //-----------------------------------
   // Lepton Selection 
   //-----------------------------------
-  ElectronIDMod* eleIdMod = new ElectronIDMod;
+  ElectronIDModRun1* eleIdMod = new ElectronIDModRun1;
   eleIdMod->SetPtMin(10.);  
   eleIdMod->SetEtaMax(2.5);
   eleIdMod->SetApplyEcalFiducial(true);
-  eleIdMod->SetIDType(mithep::ElectronTools::kVBTFWorkingPoint95Id);
-  eleIdMod->SetIsoType(mithep::ElectronTools::kPFIso);
+  //eleIdMod->SetIdType(mithep::ElectronTools::kVBTFWorkingPoint95Id);
+  eleIdMod->SetIDType("VBTFWorkingPoint95Id");
+  eleIdMod->SetIsoType("PFIso");
   eleIdMod->SetApplyConversionFilterType1(kTRUE);
   eleIdMod->SetApplyConversionFilterType2(kFALSE);
   eleIdMod->SetChargeFilter(kFALSE);
   eleIdMod->SetApplyD0Cut(kTRUE);
   eleIdMod->SetApplyDZCut(kTRUE);
   eleIdMod->SetWhichVertex(-1);
+  //eleIdMod->SetInputName("Electrons");
+  //eleIdMod->SetOutputName("GoodElectronsBS");
   eleIdMod->SetGoodElectronsName("GoodElectronsBS");
-  eleIdMod->SetRhoAlgo(mithep::PileupEnergyDensity::kKt6PFJets);
+  //eleIdMod->SetRhoAlgo(mithep::PileupEnergyDensity::kKt6PFJets);
 
-  MuonIDMod *muonId = new MuonIDMod;
+  MuonIDModRun1 *muonId = new MuonIDModRun1;
   muonId->SetOutputName("GoodMuons");
   muonId->SetIntRadius(0.0);
   muonId->SetClassType("GlobalTracker");
@@ -223,7 +229,7 @@ void runMonoJetSkim(const char *fileset    = "0000",
   photonReg->SetMinNumPhotons(0);
   photonReg->SetIsData(isData);
 
-  PhotonIDMod *photonIDMod = new PhotonIDMod;
+  PhotonIDModRun1 *photonIDMod = new PhotonIDModRun1;
   photonIDMod->SetPtMin(0.0);
   photonIDMod->SetOutputName("GoodPhotons");
   photonIDMod->SetIDType("BaseLineCiCPFNoPresel");
@@ -242,7 +248,7 @@ void runMonoJetSkim(const char *fileset    = "0000",
   photonIDMod->SetDoShowerShapeScaling(kTRUE);
   photonIDMod->SetShowerShapeType("2012ShowerShape");
 
-  PFTauIDMod *pfTauIDMod = new PFTauIDMod;
+  PFTauIDModRun1 *pfTauIDMod = new PFTauIDModRun1;
   pfTauIDMod->SetPFTausName("HPSTaus");
   pfTauIDMod->SetIsLooseId(kFALSE);
 
@@ -274,14 +280,17 @@ void runMonoJetSkim(const char *fileset    = "0000",
   jetCorr->SetInputName(pubJet->GetOutputName());
   jetCorr->SetCorrectedName("CorrectedJets");    
 
-  JetIDMod *jetID = new JetIDMod;
+  JetIdMod *jetID = new JetIdMod;
   jetID->SetInputName(jetCorr->GetOutputName());
-  jetID->SetPtCut(30.0);
-  jetID->SetEtaMaxCut(4.7);
-  jetID->SetJetEEMFractionMinCut(0.00);
   jetID->SetOutputName("GoodJets");
+  jetID->SetPtMin(30.0);
+  jetID->SetEtaMax(4.7);
+  jetID->SetApplyPFLooseId(kTRUE);
   jetID->SetApplyBetaCut(kFALSE);
-  jetID->SetApplyMVACut(kTRUE);
+  jetID->SetMVATrainingSet(JetIDMVA::k53);
+  jetID->SetMVACutWP(JetIDMVA::kLoose);
+  jetID->SetMVACutsFile(MitData + "/jetIDCuts_121221.dat");
+  jetID->SetMVAWeightsFile(MitData + "/TMVAClassificationCategory_JetID_53X_Dec2012.weights.xml");
 
   JetCleaningMod *jetCleaning = new JetCleaningMod;
   jetCleaning->SetCleanElectronsName(electronCleaning->GetOutputName());
@@ -305,9 +314,11 @@ void runMonoJetSkim(const char *fileset    = "0000",
   //------------------------------------------------------------------------------------------------
   // select events
   //------------------------------------------------------------------------------------------------
+
   float minLeadingJetEt = 100.;
   float maxJetEta       = 4.7;
   float minMet          = 160.;
+
 
   MonoJetAnalysisMod *monojetSel = new MonoJetAnalysisMod("MonoJetSelector");
   monojetSel->SetInputMetName(metCorrT0T1Shift->GetOutputName());
@@ -323,6 +334,7 @@ void runMonoJetSkim(const char *fileset    = "0000",
   monojetSel->SetLeptonsName(merger->GetOutputName());
   monojetSel->SetCategoriesName("MonoJetEventCategories");
 
+ 
   // Jet + MET (signal region)
   unsigned iCat = 0;
   monojetSel->SetMinNumLeptons(iCat, 0);
@@ -394,6 +406,7 @@ void runMonoJetSkim(const char *fileset    = "0000",
     monojetSel->SetMaxNeutralEmFrac(iCat, 0.7);
   }
 
+  
   //------------------------------------------------------------------------------------------------
   // making the analysis chain
   //------------------------------------------------------------------------------------------------
@@ -403,9 +416,11 @@ void runMonoJetSkim(const char *fileset    = "0000",
   goodPvMod        ->Add(hltModP);
   // photon regression
   hltModP          ->Add(photonReg);
+  
   // simple object id modules
   photonReg        ->Add(SepPUMod); 
   SepPUMod         ->Add(muonId);
+  
   muonId           ->Add(eleIdMod);
   eleIdMod	   ->Add(electronCleaning);
   electronCleaning ->Add(merger);
@@ -419,6 +434,8 @@ void runMonoJetSkim(const char *fileset    = "0000",
   metCorrT0T1Shift ->Add(jetID);
   jetID            ->Add(jetCleaning);
   jetCleaning      ->Add(monojetSel);
+ 
+  //monojetSel->Add(counter);
 
   //------------------------------------------------------------------------------------------------
   // setup analysis
@@ -456,6 +473,7 @@ void runMonoJetSkim(const char *fileset    = "0000",
   OutputMod *skimOutput = new OutputMod;
   skimOutput->Drop("*");
   skimOutput->Keep("HLT*");
+  
   skimOutput->Keep("MC*");
   skimOutput->Keep("PileupInfo");
   skimOutput->Keep("Rho");
@@ -475,7 +493,13 @@ void runMonoJetSkim(const char *fileset    = "0000",
   skimOutput->SetFileName(outputName);
   skimOutput->SetPathName(".");
 
+
+  //hltModP->Add(monojetSel);
+  //counter->Add(skimOutput);
   monojetSel->Add(skimOutput);
+
+
+
 
   //------------------------------------------------------------------------------------------------
   // Say what we are doing
@@ -498,3 +522,4 @@ void runMonoJetSkim(const char *fileset    = "0000",
 
   return;
 }
+

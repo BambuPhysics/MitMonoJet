@@ -1,7 +1,0 @@
-<use   name="MitAna/DataCont"/>
-<use   name="MitAna/DataTree"/>
-<lib   name="EG"/>
-<export>
-  <use   name="EG"/>
-  <lib   name="1"/>
-</export>
