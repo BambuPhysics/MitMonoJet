@@ -37,26 +37,18 @@ mithep::PreRun2SynchExercise::Process()
   fSynchPass[kTauVeto] = nTaus == 0;
   fSynchPass[kPhotonVeto] = inPhotons->GetEntries() == 0;
 
-  PFJet const* leadJet = 0;
-  PFJet const* trailJet = 0;
-
   fSynchPass[kCleanJets] = false;
   fSynchPass[kLeadingJet110] = false;
   fSynchPass[kDeltaPhiJ1J2] = false;
-  if (inJets->GetEntries() > 0) {
-    leadJet = static_cast<PFJet const*>(inJets->At(0));
-    if (inJets->GetEntries() > 1) {
-      trailJet = static_cast<PFJet const*>(inJets->At(1));
-      if (inJets->At(1)->Pt() > leadJet->Pt()) {
-        PFJet const* tmp = leadJet;
-        leadJet = trailJet;
-        trailJet = tmp;
-      }
-    }
 
-    if (leadJet->ChargedHadronEnergy() / leadJet->E() > 0.2 &&
-        leadJet->NeutralHadronEnergy() / leadJet->E() < 0.7 &&
-        leadJet->NeutralEmEnergy() / leadJet->E() < 0.7) {
+  if (inJets->GetEntries() > 0) {
+    PFJet const* leadJet = static_cast<PFJet const*>(inJets->At(0));
+
+    double rawE = leadJet->RawMom().E();
+
+    if (leadJet->ChargedHadronEnergy() / rawE > 0.2 &&
+        leadJet->NeutralHadronEnergy() / rawE < 0.7 &&
+        leadJet->NeutralEmEnergy() / rawE < 0.7) {
       fSynchPass[kCleanJets] = true;
       if (leadJet->Pt() > 110.)
         fSynchPass[kLeadingJet110] = true;
@@ -64,9 +56,13 @@ mithep::PreRun2SynchExercise::Process()
 
     fSynchPass[kDeltaPhiJ1J2] = true;
 
-    if (trailJet) {
-      if (trailJet->NeutralHadronEnergy() / trailJet->E() < 0.7 &&
-          trailJet->NeutralEmEnergy() / trailJet->E() < 0.9) {
+    if (inJets->GetEntries() > 1) {
+      PFJet const* trailJet = static_cast<PFJet const*>(inJets->At(1));
+
+      double rawETrail = trailJet->RawMom().E();
+
+      if (trailJet->NeutralHadronEnergy() / rawETrail < 0.7 &&
+          trailJet->NeutralEmEnergy() / rawETrail < 0.9) {
         if (std::abs(TVector2::Phi_mpi_pi(leadJet->Phi() - trailJet->Phi())) > 2.5)
           fSynchPass[kDeltaPhiJ1J2] = false;
       }
