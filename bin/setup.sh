@@ -1,7 +1,5 @@
 #!/bin/bash
 
-$CMSSW_BASE/src/MitMonoJet/bin/installQjets.sh
-
 if [ -e $HOME/cms/root/rootlogon.C ]
 then
   cp $HOME/cms/root/rootlogon.C $HOME/cms/root/rootlogon.C.last
