@@ -13,8 +13,8 @@
 #include <TMath.h>
 #include "MitCommon/MathTools/interface/MathUtils.h"
 #include "MitPlots/Input/interface/TaskSamples.h"
-#include "MitMonoJet/Core/MitDMSTree.h"
-#include "MitMonoJet/Core/MitSynchTree.h"
+#include "MitMonoJet/Core/interface/MitDMSTree.h"
+#include "MitMonoJet/Core/interface/MitSynchTree.h"
 
 #include "TLorentzVector.h"
 

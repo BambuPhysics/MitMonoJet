@@ -44,7 +44,7 @@
 #include "MitPhysics/Utils/interface/VertexTools.h"
 #include "MitPhysics/Utils/interface/ElectronIDMVA.h"
 
-#include "MitMonoJet/Core/MitGPTree.h"
+#include "MitMonoJet/Core/interface/MitGPTree.h"
 
 
 namespace mithep 
