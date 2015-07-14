@@ -24,7 +24,7 @@
 #include "MitAna/DataTree/interface/PFTauCol.h"
 #include "MitAna/DataTree/interface/PFCandidateCol.h"
 #include "MitAna/PhysicsUtils/interface/QGTagger.h"
-#include "MitMonoJet/Core/MitGPBoostedVTree.h"
+#include "MitMonoJet/Core/interface/MitGPBoostedVTree.h"
 
 namespace mithep
 {

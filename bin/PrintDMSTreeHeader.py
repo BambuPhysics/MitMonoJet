@@ -16,7 +16,7 @@ for line in lines:
 config.close()
 
 # open header file
-header = open("Core/MitDMSTree_new.h", "w")
+header = open("Core/interface/MitDMSTree_new.h", "w")
 print header
 #print "writing"
 

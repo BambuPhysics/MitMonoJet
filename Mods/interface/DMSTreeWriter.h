@@ -32,7 +32,7 @@
 #include "MitAna/DataTree/interface/XsIsoParticleCol.h"
 #include "MitMonoJet/Utils/interface/DiJetMVA.h"
 
-#include "MitMonoJet/Core/MitDMSTree.h"
+#include "MitMonoJet/Core/interface/MitDMSTree.h"
 
 
 namespace mithep 
